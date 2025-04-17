@@ -1,47 +1,52 @@
-import tkinter as tk
+import tkinter as tk  # Import Tkinter for GUI
 
-# Function to update input field
-def on_button_click(value):
-    entry_var.set(entry_var.get() + str(value))
+# Adds button value to the input
+def button_click(value):
+    current = display_var.get()  # Get current text
+    display_var.set(current + str(value))  # Add new value
 
-# Function to evaluate expression
+# Calculates the result of the expression
 def calculate():
     try:
-        entry_var.set(eval(entry_var.get()))  # Evaluate the expression
-    except ZeroDivisionError:
-        entry_var.set("Error")
-    except:
-        entry_var.set("Error")
+        result = eval(display_var.get())  # Evaluate input
+        display_var.set(result)  # Show result
+    except ZeroDivisionError:  # Handle divide by 0
+        display_var.set("Error")
+    except:  # Handle any other error
+        display_var.set("Error")
 
-# Function to clear input field
+# Clears the input field
 def clear():
-    entry_var.set("")
+    display_var.set("")  # Set input to empty
 
 # Create main window
 root = tk.Tk()
-root.title("Simple Calculator")
+root.title("Simple Calculator")  # Window title
 
-# Create input field
-entry_var = tk.StringVar()
-entry = tk.Entry(root, textvariable=entry_var)
-entry.grid(row=0, column=0, columnspan=4)
+# Entry box to show input and output
+display_var = tk.StringVar()  # Text holder
+entry = tk.Entry(root, textvariable=display_var, font=("Times New Roman", 20), justify="right", bd=5)
+entry.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
 
-# Button layout
-buttons = [
+# Button labels with their positions
+btns = [
     ("7", 1, 0), ("8", 1, 1), ("9", 1, 2), ("/", 1, 3),
     ("4", 2, 0), ("5", 2, 1), ("6", 2, 2), ("*", 2, 3),
     ("1", 3, 0), ("2", 3, 1), ("3", 3, 2), ("-", 3, 3),
     ("0", 4, 0), (".", 4, 1), ("=", 4, 2), ("+", 4, 3),
 ]
 
-# Create buttons
-for text, row, col in buttons:
-    button = tk.Button(root, text=text, command=(calculate if text == "=" else lambda t=text: on_button_click(t)))
-    button.grid(row=row, column=col)
+# Create buttons and place them
+for (text, r, c) in btns:
+    if text == "=":
+        btn = tk.Button(root, text=text, font=("Times New Roman", 16), width=5, height=2, command=calculate)
+    else:
+        btn = tk.Button(root, text=text, font=("Times New Roman", 16), width=5, height=2, command=lambda val=text: button_click(val))
+    btn.grid(row=r, column=c, padx=2, pady=2)
 
-# Clear button
-clear_button = tk.Button(root, text="C", command=clear)
-clear_button.grid(row=5, column=0, columnspan=4)
+# Create Clear (C) button
+clr_btn = tk.Button(root, text="C", font=("Times New Roman", 16), width=23, height=2, command=clear)
+clr_btn.grid(row=5, column=0, columnspan=4, padx=5, pady=5)
 
-# Run the GUI
+# Start the GUI loop
 root.mainloop()
